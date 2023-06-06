@@ -1,0 +1,21 @@
+[
+    {   
+        "id": 0,
+        "name": "Dworzec Główny Kraków",
+        "coordinates": [50.0689127844724, 19.9473347448788],
+        "phoneNumber": "+48 123 123 123"
+    },
+    {   
+        "id": 1,
+        "name": "Przejście Podziemne Basztowa",
+        "coordinates": [50.064537933754, 19.944673993148673],
+        "phoneNumber": "+48 123 123 123"
+    },
+    {   
+        "id": 2,
+        "name": "Muzeum Rynek Podziemny",
+        "coordinates": [50.06215178450333, 19.9377174360392],
+        "phoneNumber": "+48 123 123 123"
+    }
+    
+]
