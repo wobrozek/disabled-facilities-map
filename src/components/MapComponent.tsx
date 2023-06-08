@@ -1,13 +1,15 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { Mark } from "../types"
 import locations from "../locations.json"
 import 'leaflet/dist/leaflet.css';
 
 function MapComponent() {
 
     const markers = locations.map(location => {
+
+        const latLngs : [number, number] = [location.coordinates[0], location.coordinates[1]]
+        
         return ( 
-        <Marker key={location.id} position={location.coordinates}>
+        <Marker key={location.id} position={latLngs}>
             <Popup className='popup'>
                 <h2 className='popup__title'>{location.name}</h2>
                 <p className='popup__phoneNumber'>{location.phoneNumber}</p>
