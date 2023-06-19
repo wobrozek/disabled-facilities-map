@@ -13,7 +13,7 @@
 }
 
 .map {
-  height: 100vh
+  height: 100vh;
 }
 
 .leaflet-container {
@@ -56,5 +56,38 @@
 
   &__heading {
     font-size: 1.1rem;
+  }
+}
+
+.dialog-popup {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  gap: 1rem;
+  padding: 1rem;
+  position: absolute;
+  z-index: 9999;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--popup-background-color);
+  cursor: default;
+
+  &__photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__data-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
   }
 }

@@ -9,11 +9,13 @@
   -webkit-text-size-adjust: 100%;
 
   --background-color: #242424;
+  --popup-background-color: #242222;
   --white: #DDE6ED;
 }
 
 
 body {
+  position: relative;
   margin: 0;
   max-height: 100vh;
   background-color: var(--background-color);
