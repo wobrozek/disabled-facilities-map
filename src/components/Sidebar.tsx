@@ -2,10 +2,10 @@ import { Accordion, AccordionSummary } from '@mui/material';
 import PlacesFilter from './PlacesFilter';
 import Profile from './Profile';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { SetStateAction } from 'react';
 
 type SidebarProps = {
-  handleSearch: (valuesArray: string[]) => void;
+  handleFacilitySearch: (valuesArray: string[]) => void;
+  handlePlacesSearch: (valuesArray: string[]) => void;
 };
 
 function Sidebar(props: SidebarProps) {
@@ -16,7 +16,10 @@ function Sidebar(props: SidebarProps) {
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           Filtr Places
         </AccordionSummary>
-        <PlacesFilter handleSearch={props.handleSearch} />
+        <PlacesFilter
+          handleFacilitySearch={props.handleFacilitySearch}
+          handlePlacesSearch={props.handlePlacesSearch}
+        />
       </Accordion>
     </div>
   );

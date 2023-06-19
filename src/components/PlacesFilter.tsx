@@ -8,24 +8,32 @@ import {
 import { useState } from 'react';
 
 type PlacesFilterProps = {
-  handleSearch: (valuesArray: string[]) => void;
+  handleFacilitySearch: (valuesArray: string[]) => void;
+  handlePlacesSearch: (valuesArray: string[]) => void;
 };
 
 function PlacesFilter(props: PlacesFilterProps) {
-  const [isOptionsChecked, setIsOptionChecked] = useState({
+  const [placesOptions, setPlacesOptions] = useState({
     restaurants: false,
+    bars: false,
     shops: false,
     entertainment: false,
     education: false,
+    health: false,
+  });
+
+  const [facilitiesOptions, setFacilitiesOptions] = useState({
     elevators: false,
     restrooms: false,
   });
 
   const places: string[] = [
     'restaurants',
+    'bars',
     'shops',
     'entertainment',
     'education',
+    'health',
   ];
   const facilities: string[] = ['elevators', 'restrooms'];
 
@@ -36,7 +44,7 @@ function PlacesFilter(props: PlacesFilterProps) {
         control={
           <Checkbox
             name={place}
-            checked={isOptionsChecked[place as keyof typeof isOptionsChecked]}
+            checked={placesOptions[place as keyof typeof placesOptions]}
           />
         }
         label={place}
@@ -52,7 +60,7 @@ function PlacesFilter(props: PlacesFilterProps) {
           <Checkbox
             name={facility}
             checked={
-              isOptionsChecked[facility as keyof typeof isOptionsChecked]
+              facilitiesOptions[facility as keyof typeof facilitiesOptions]
             }
           />
         }
@@ -61,8 +69,17 @@ function PlacesFilter(props: PlacesFilterProps) {
     );
   });
 
-  function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setIsOptionChecked((previous) => {
+  function handlePlacesFormChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setPlacesOptions((previous) => {
+      return {
+        ...previous,
+        [e.target.name]: e.target.checked,
+      };
+    });
+  }
+
+  function handleFacilitiesFormChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFacilitiesOptions((previous) => {
       return {
         ...previous,
         [e.target.name]: e.target.checked,
@@ -72,7 +89,7 @@ function PlacesFilter(props: PlacesFilterProps) {
 
   function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const searchValuesArray = Object.entries(isOptionsChecked).reduce(
+    const facilitieSearchValuesArray = Object.entries(facilitiesOptions).reduce(
       (acc: string[], [key, value]) => {
         if (value) {
           acc.push(key);
@@ -81,17 +98,33 @@ function PlacesFilter(props: PlacesFilterProps) {
       },
       []
     );
-    props.handleSearch(searchValuesArray);
+    console.log(facilitieSearchValuesArray);
+    const placesSearchValuesArray = Object.entries(placesOptions).reduce(
+      (acc: string[], [key, value]) => {
+        if (value) {
+          acc.push(key);
+        }
+        return acc;
+      },
+      []
+    );
+    console.log(placesSearchValuesArray);
+    props.handleFacilitySearch(facilitieSearchValuesArray);
+    props.handlePlacesSearch(placesSearchValuesArray);
   }
 
   return (
     <div className="places-filter">
       <form onSubmit={handleFormSubmit}>
-        <FormControl onChange={handleFormChange}>
+        <FormControl>
           <h3 className="places-filter__heading">Places</h3>
-          <FormGroup row={true}>{placesCheckboxes}</FormGroup>
+          <FormGroup onChange={handlePlacesFormChange} row={true}>
+            {placesCheckboxes}
+          </FormGroup>
           <h3 className="places-filter__heading">Facilities</h3>
-          <FormGroup row={true}>{facilitiesCheckboxes}</FormGroup>
+          <FormGroup onChange={handleFacilitiesFormChange} row={true}>
+            {facilitiesCheckboxes}
+          </FormGroup>
           <Button type="submit">Search</Button>
         </FormControl>
       </form>
