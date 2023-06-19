@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Button } from '@mui/material';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import PlaceDialogSkeleton from './PlaceDialogSkeleton';
@@ -47,8 +47,10 @@ function PlaceDialog(props: PlaceDialogProps) {
         console.error(err);
       }
     }
-    getPlaceDetails(props.id);
-  }, []);
+    if (props.id) {
+      getPlaceDetails(props.id);
+    }
+  }, [props.id]);
 
   return (
     <section className="dialog-popup">

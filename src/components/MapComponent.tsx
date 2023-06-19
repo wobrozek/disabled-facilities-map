@@ -68,10 +68,6 @@ function MapComponent(props: MapComponentProps) {
     placeSearch(props.searchValuesPlaces, mapPosition);
   }, [props.searchValuesPlaces, mapPosition]);
 
-  const placeDialog = useMemo(() => {
-    return <PlaceDialog id={currentDialogId} />;
-  }, [currentDialogId]);
-
   const placesMarkers = results.map((result: Place) => {
     const latLngs: [number, number] = [
       result.geocodes.main.latitude,
@@ -87,9 +83,7 @@ function MapComponent(props: MapComponentProps) {
             setCurrentDialogId(result.fsq_id);
           },
         }}
-      >
-        {currentDialogId === result.fsq_id && placeDialog}
-      </Marker>
+      ></Marker>
     );
   });
 
@@ -122,6 +116,7 @@ function MapComponent(props: MapComponentProps) {
         />
         <MapEvents />
         {facilitiesMarkers}
+        <PlaceDialog id={currentDialogId} />
         {placesMarkers}
       </MapContainer>
     </div>
