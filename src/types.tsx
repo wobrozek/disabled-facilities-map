@@ -5,7 +5,7 @@ export type Location = {
   phoneNumber: string;
 }[];
 
-export type Place = {
+export type PlaceResult = {
   categories: {}[];
   chains: [];
   distance: number;
