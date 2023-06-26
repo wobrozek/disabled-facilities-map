@@ -13,6 +13,7 @@ type MapComponentProps = {
     name: string;
     location: string;
   }) => void;
+  userCoordinates: [number, number] | undefined;
 };
 
 function MapComponent(props: MapComponentProps) {
@@ -86,9 +87,16 @@ function MapComponent(props: MapComponentProps) {
     );
   });
 
+  console.log(props.userCoordinates);
   return (
     <div className="map">
-      <MapContainer center={[50.04, 19.94]} zoom={13} scrollWheelZoom={true}>
+      <MapContainer
+        center={
+          props.userCoordinates ? props.userCoordinates : [50.049683, 19.944544]
+        }
+        zoom={13}
+        scrollWheelZoom={true}
+      >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
