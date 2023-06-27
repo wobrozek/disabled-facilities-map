@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import MapComponent from './components/MapComponent';
 import DialogContext from './context/DialogContext';
 import Sidebar from './components/Sidebar';
@@ -15,25 +15,6 @@ function App() {
       location: string;
     }[]
   >([]);
-  const [userCoordinates, setUserCoordinates] = useState<
-    [number, number] | undefined
-  >(undefined);
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserCoordinates([latitude, longitude]);
-        },
-        (error) => {
-          console.error('Error getting geolocation:', error);
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
-  }, []);
 
   const categoryIds = {
     restaurants: '13065',
@@ -80,7 +61,6 @@ function App() {
           searchValuesFacilities={facilitiesSearch}
           searchValuesPlaces={placesSearch as string[]}
           handleAddToFavorites={addToFavorites}
-          userCoordinates={userCoordinates}
         />
       </DialogContext.Provider>
     </>

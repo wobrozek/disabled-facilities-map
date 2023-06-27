@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { PlaceResult } from '../types';
 import PlaceDialog from './PlaceDialog';
 import FacilityMarkers from './FacilityMarkers';
+import GeoSearch from './GeoSearch';
 
 type MapComponentProps = {
   searchValuesFacilities: string[];
@@ -13,7 +14,6 @@ type MapComponentProps = {
     name: string;
     location: string;
   }) => void;
-  userCoordinates: [number, number] | undefined;
 };
 
 function MapComponent(props: MapComponentProps) {
@@ -87,13 +87,10 @@ function MapComponent(props: MapComponentProps) {
     );
   });
 
-  console.log(props.userCoordinates);
   return (
     <div className="map">
       <MapContainer
-        center={
-          props.userCoordinates ? props.userCoordinates : [50.049683, 19.944544]
-        }
+        center={[50.049683, 19.944544]}
         zoom={13}
         scrollWheelZoom={true}
       >
@@ -110,6 +107,7 @@ function MapComponent(props: MapComponentProps) {
           handleAddToFavorites={props.handleAddToFavorites}
         />
         {placesMarkers}
+        <GeoSearch />
       </MapContainer>
     </div>
   );

@@ -15,6 +15,7 @@ function MyPlaces(props: MyPlacesProps) {
       <ListItem key={place.id} id={place.id}>
         <ListItemText primary={place.name} secondary={place.location} />
         <IconButton
+          aria-label="delete"
           onClick={() => {
             props.handleDeletePlace(place.id);
           }}
