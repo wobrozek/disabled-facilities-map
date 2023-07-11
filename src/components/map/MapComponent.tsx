@@ -1,25 +1,20 @@
 import { useEffect, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import { PlaceResult } from '../types';
-import PlaceDialog from './PlaceDialog';
-import FacilityMarkers from './FacilityMarkers';
+import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import GeoSearch from './GeoSearch';
+import PlacesMarkers from './PlacesMarkers';
+import FacilityMarkers from './FacilityMarkers';
+import AddPlace from './AddPlace';
 
 type MapComponentProps = {
   searchValuesFacilities: string[];
   searchValuesPlaces: string[];
-  handleAddToFavorites: (place: {
-    id: string;
-    name: string;
-    location: string;
-  }) => void;
+  handleSetCurrentDialogId: (value: string) => void;
 };
 
 function MapComponent(props: MapComponentProps) {
-  const [results, setResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentDialogId, setCurrentDialogId] = useState<string>('');
+  const [placeResults, setPlaceResults] = useState([]);
+  const [facilityResults, setFacilityResults] = useState([]);
   const [mapPosition, setMapPosition] = useState<[number, number]>([
     50.04, 19.94,
   ]);
@@ -39,7 +34,6 @@ function MapComponent(props: MapComponentProps) {
       searchCategories: string[],
       currentPosition: [number, number]
     ) {
-      setIsLoading(true);
       try {
         const searchParams = new URLSearchParams({
           categories: searchCategories.toString(),
@@ -58,41 +52,21 @@ function MapComponent(props: MapComponentProps) {
           }
         );
         const data = await results.json();
-        setResults(data.results);
-        setIsLoading(false);
+        setPlaceResults(data.results);
       } catch (err) {
         console.error(err);
-        setIsLoading(false);
       }
     }
     placeSearch(props.searchValuesPlaces, mapPosition);
   }, [props.searchValuesPlaces, mapPosition]);
-
-  const placesMarkers = results.map((result: PlaceResult) => {
-    const latLngs: [number, number] = [
-      result.geocodes.main.latitude,
-      result.geocodes.main.longitude,
-    ];
-
-    return (
-      <Marker
-        key={result.fsq_id}
-        position={latLngs}
-        eventHandlers={{
-          click: () => {
-            setCurrentDialogId(result.fsq_id);
-          },
-        }}
-      ></Marker>
-    );
-  });
 
   return (
     <div className="map">
       <MapContainer
         center={[50.049683, 19.944544]}
         zoom={13}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
+        preferCanvas={true}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -102,11 +76,11 @@ function MapComponent(props: MapComponentProps) {
         <FacilityMarkers
           searchValuesFacilities={props.searchValuesFacilities}
         />
-        <PlaceDialog
-          id={currentDialogId}
-          handleAddToFavorites={props.handleAddToFavorites}
+        <PlacesMarkers
+          results={placeResults}
+          handleSetCurrentDialogId={props.handleSetCurrentDialogId}
         />
-        {placesMarkers}
+        <AddPlace />
         <GeoSearch />
       </MapContainer>
     </div>

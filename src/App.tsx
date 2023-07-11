@@ -1,69 +1,73 @@
-import { useState } from 'react';
-import MapComponent from './components/MapComponent';
-import DialogContext from './context/DialogContext';
+import { useEffect, useState } from 'react';
+import { Cookies } from 'react-cookie';
+import UserContext from './context/UserContext';
+import MapComponent from './components/map/MapComponent';
 import Sidebar from './components/Sidebar';
+import PlaceDialog from './components/PlaceDialog';
 import 'leaflet/dist/leaflet.css';
 import './styles/App.scss';
 
 function App() {
   const [facilitiesSearch, setFacilitiesSearch] = useState<string[]>([]);
   const [placesSearch, setPlacesSearch] = useState<string[]>([]);
-  const [myPlaces, setMyPlaces] = useState<
-    {
-      id: string;
-      name: string;
-      location: string;
-    }[]
-  >([]);
+  const [currentDialogId, setCurrentDialogId] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const categoryIds = {
-    restaurants: '13065',
-    shops: '17000',
-    bars: '13003',
-    entertainment: '10000',
-    education: '12013',
-    health: '15000',
-  };
+  useEffect(() => {
+    const cookies = new Cookies();
+    const token = cookies.get('userToken');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  function handleLogIn() {
+    setIsLoggedIn((prev) => !prev);
+  }
 
   function getFacilitySearchValues(valuesArray: string[]) {
     setFacilitiesSearch(valuesArray);
   }
 
   function getPlacesCategories(valuesArray: string[]) {
+    const categoryIDs = {
+      restaurants: '13065',
+      shops: '17000',
+      bars: '13003',
+      entertainment: '10000',
+      education: '12013',
+      health: '15000',
+    };
+
     const categoriesArray: string[] = valuesArray.map(
-      (value) => categoryIds[value as keyof typeof categoryIds]
+      (value) => categoryIDs[value as keyof typeof categoryIDs]
     );
     setPlacesSearch(categoriesArray);
   }
 
-  function addToFavorites(place: {
-    id: string;
-    name: string;
-    location: string;
-  }) {
-    setMyPlaces((prev) => [...prev, place]);
-  }
-
-  function deletePlace(id: string) {
-    const updated = myPlaces.filter((place) => place.id !== id);
-    setMyPlaces(updated);
+  function getCurrentDialogId(value: string) {
+    setCurrentDialogId(value);
   }
 
   return (
-    <>
-      <DialogContext.Provider value={myPlaces}>
+    <div className="app">
+      <UserContext.Provider value={isLoggedIn}>
         <Sidebar
           handleFacilitySearch={getFacilitySearchValues}
           handlePlacesSearch={getPlacesCategories}
-          handleDeletePlace={deletePlace}
+          handleLogIn={handleLogIn}
+          handleSetCurrentDialog={getCurrentDialogId}
         />
-        <MapComponent
-          searchValuesFacilities={facilitiesSearch}
-          searchValuesPlaces={placesSearch as string[]}
-          handleAddToFavorites={addToFavorites}
-        />
-      </DialogContext.Provider>
-    </>
+        <div className="dialog-map-wrapper">
+          {currentDialogId && <PlaceDialog id={currentDialogId} />}
+          <MapComponent
+            searchValuesFacilities={facilitiesSearch}
+            searchValuesPlaces={placesSearch}
+            handleSetCurrentDialogId={getCurrentDialogId}
+          />
+        </div>
+      </UserContext.Provider>
+    </div>
   );
 }
 

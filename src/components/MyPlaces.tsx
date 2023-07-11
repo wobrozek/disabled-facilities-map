@@ -1,33 +1,51 @@
-import { useContext } from 'react';
-import DialogContext from '../context/DialogContext';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { List, ListItem, IconButton, ListItemText } from '@mui/material/';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Cookies } from 'react-cookie';
 
-type MyPlacesProps = {
-  handleDeletePlace: (id: string) => void;
-};
+function MyPlaces() {
+  const [userPlaces, setUserPlaces] = useState([]);
 
-function MyPlaces(props: MyPlacesProps) {
-  const myPlaces = useContext(DialogContext);
+  useEffect(() => {
+    const cookies = new Cookies();
+    const token = cookies.get('userToken');
+    axios
+      .get('https://disability-map.azurewebsites.net/User/Places', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setUserPlaces(response.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
-  const listOfPlaces = myPlaces.map((place) => {
+  const listOfPlaces = userPlaces.map((place: any) => {
     return (
-      <ListItem key={place.id} id={place.id}>
-        <ListItemText primary={place.name} secondary={place.location} />
-        <IconButton
-          aria-label="delete"
-          onClick={() => {
-            props.handleDeletePlace(place.id);
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
+      <ListItem
+        key={place.id}
+        secondaryAction={
+          <IconButton edge="end" aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        }
+      >
+        <ListItemText
+          primary={place.name}
+          secondary={place.adress}
+        ></ListItemText>
       </ListItem>
     );
   });
 
   return (
     <div className="my-places">
+      {!userPlaces && "You haven't added any places yet"}
       <List>{listOfPlaces}</List>
     </div>
   );

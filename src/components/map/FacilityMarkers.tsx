@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Marker, Popup } from 'react-leaflet';
-import locations from '../locations.json';
+import { Marker } from 'react-leaflet';
+import locations from '../../locations.json';
 import L from 'leaflet';
 import { FaWheelchair } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
@@ -16,7 +16,7 @@ function FacilityMarkers(props: FacilityMarkersProps) {
       <IconContext.Provider
         value={{ color: 'green', className: 'custom-icon__icon' }}
       >
-        <FaWheelchair fontSize={30} />
+        <FaWheelchair fontSize={40} />
       </IconContext.Provider>
     ),
   });
@@ -33,9 +33,9 @@ function FacilityMarkers(props: FacilityMarkersProps) {
 
     return (
       <Marker
+        icon={customFacilityIcon}
         key={location.id}
         position={latLngs}
-        icon={customFacilityIcon}
       ></Marker>
     );
   });
