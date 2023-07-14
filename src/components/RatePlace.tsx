@@ -1,35 +1,102 @@
-import { SyntheticEvent, useState } from 'react';
-import { FormControl, RadioGroup, Radio } from '@mui/material/';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { IconButton } from '@mui/material/';
+import {
+  ThumbDownAlt,
+  ThumbDownOffAlt,
+  ThumbUpAlt,
+  ThumbUpOffAlt,
+} from '@mui/icons-material';
 
-function RatePlace() {
-  const [value, setValue] = useState<string | undefined>('');
+type RatePlaceProps = {
+  id: string;
+};
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((e.target as HTMLInputElement).value);
-  };
+function RatePlace(props: RatePlaceProps) {
+  const [rateValues, setRateValues] = useState(0);
+  const [score, setScore] = useState({ likes: 0, dislikes: 0 });
+  const [cookies] = useCookies(['userToken']);
+
+  useEffect(() => {
+    axios
+      .get(`https://disability-map.azurewebsites.net/Score/${props.id}`)
+      .then((response) => {
+        console.log(response);
+        setScore({
+          likes: response.data.data.likes,
+          dislikes: response.data.data.disLikes,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [props.id, rateValues]);
+
+  function handleLike() {
+    axios
+      .put(
+        `https://disability-map.azurewebsites.net/Score/upvote/${props.id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.userToken}`,
+            Accept: 'text/plain',
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        setRateValues(response.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  function handleDislike() {
+    axios
+      .put(
+        `https://disability-map.azurewebsites.net/Score/downvote/${props.id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.userToken}`,
+            Accept: 'text/plain',
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        rateValues === 0 ? setRateValues(-1) : setRateValues(0);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   return (
     <div className="rating">
-      <FormControl>
-        <RadioGroup row name="rate-place" value={value} onChange={handleChange}>
-          <Radio
-            inputProps={{ 'aria-label': 'Like' }}
-            icon={<ThumbUpOffAltIcon fontSize="large" color="primary" />}
-            checkedIcon={<ThumbUpAltIcon fontSize="large" />}
-            value="like"
-          />
-          <Radio
-            inputProps={{ 'aria-label': 'Dislike' }}
-            icon={<ThumbDownOffAltIcon fontSize="large" color="primary" />}
-            checkedIcon={<ThumbDownAltIcon />}
-            value="dislike"
-          />
-        </RadioGroup>
-      </FormControl>
+      <div className="rating__thumb">
+        {score.likes}
+        <IconButton onClick={handleLike}>
+          {rateValues === 1 ? (
+            <ThumbUpAlt color="primary" />
+          ) : (
+            <ThumbUpOffAlt color="primary" />
+          )}
+        </IconButton>
+      </div>
+      <div className="rating__thumb">
+        <IconButton onClick={handleDislike}>
+          {rateValues === -1 ? (
+            <ThumbDownAlt color="primary" />
+          ) : (
+            <ThumbDownOffAlt color="primary" />
+          )}
+        </IconButton>
+        {score.dislikes}
+      </div>
     </div>
   );
 }

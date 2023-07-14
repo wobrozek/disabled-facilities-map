@@ -172,16 +172,20 @@
 
 .rating {
   border: 2px solid var(--purple-primary);
-  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
+  padding: .3rem 10px;
+  border-radius: 5px;
   box-shadow: 6px 16px 14px -13px rgba(0, 0, 0, 1);
 
-  &__thumbs {
-    background-color: var(--popup-background-color);
+  &__thumb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
   }
+
 }
 
 @media(max-width: 1000px) {

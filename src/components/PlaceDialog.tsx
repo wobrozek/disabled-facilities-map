@@ -88,7 +88,7 @@ function PlaceDialog(props: PlaceDialogProps) {
             )}
           </div>
           <div className="dialog-popup__user">
-            <RatePlace />
+            <RatePlace id={props.id} />
           </div>
         </>
       )}

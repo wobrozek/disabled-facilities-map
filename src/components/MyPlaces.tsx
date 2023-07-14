@@ -1,19 +1,18 @@
 import { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { List, ListItem, IconButton, ListItemText } from '@mui/material/';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Cookies } from 'react-cookie';
 
 function MyPlaces() {
   const [userPlaces, setUserPlaces] = useState([]);
+  const [cookies] = useCookies(['userToken']);
 
   useEffect(() => {
-    const cookies = new Cookies();
-    const token = cookies.get('userToken');
     axios
       .get('https://disability-map.azurewebsites.net/User/Places', {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${cookies.userToken}`,
         },
       })
       .then((response) => {

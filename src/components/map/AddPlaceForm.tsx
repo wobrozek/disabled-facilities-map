@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import {
   Dialog,
@@ -27,6 +27,7 @@ function AddPlaceForm(props: AddPlaceFormProps) {
     email: '',
   });
   const [photoUrl, setPhotoUrl] = useState('');
+  const [cookies] = useCookies(['userToken']);
 
   function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
     setPlaceData((prev) => {
@@ -69,8 +70,6 @@ function AddPlaceForm(props: AddPlaceFormProps) {
 
   function submitForm(e: React.FormEvent) {
     e.preventDefault();
-    const cookies = new Cookies();
-    const token = cookies.get('userToken');
     axios
       .post(
         'https://disability-map.azurewebsites.net/Place',
@@ -86,7 +85,7 @@ function AddPlaceForm(props: AddPlaceFormProps) {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${cookies.userToken}`,
           },
         }
       )
