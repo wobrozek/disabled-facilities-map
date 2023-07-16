@@ -10,14 +10,13 @@ type RegisterFormProps = {
 
 function RegisterForm(props: RegisterFormProps) {
   const [helperText, setHelperText] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
   const [userData, setUserData] = useState<{
-    photo: File | null;
     login: string;
     email: string;
     password: string;
     confirmPassword: string;
   }>({
-    photo: null,
     login: '',
     email: '',
     password: '',
@@ -37,21 +36,32 @@ function RegisterForm(props: RegisterFormProps) {
   function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target?.files;
     if (files && files.length > 0) {
-      setUserData((previous) => ({
-        ...previous,
-        photo: files[0],
-      }));
+      const formData = new FormData();
+      formData.append('image', files[0]);
+      axios
+        .post('https://disability-map.azurewebsites.net/Photo', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          setPhotoUrl(response.data.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }
 
   function closeRegister() {
     setUserData({
-      photo: null,
       login: '',
       email: '',
       password: '',
       confirmPassword: '',
     });
+    setPhotoUrl('');
     props.handleClose();
   }
 
@@ -73,38 +83,22 @@ function RegisterForm(props: RegisterFormProps) {
       userData.confirmPassword
     );
     if (isPasswordValid) {
-      let isRequestSuccessfull;
       axios
         .post('https://disability-map.azurewebsites.net/Access/Register', {
           login: userData.login,
           email: userData.email,
           password: userData.password,
+          imagePath: photoUrl,
         })
         .then((response) => {
           console.log(response.data);
           setHelperText('');
-          isRequestSuccessfull = true;
           props.handleClose();
         })
         .catch((error) => {
           console.error(error);
           setHelperText(error.response.data.message);
-          isRequestSuccessfull = false;
         });
-      if (isRequestSuccessfull) {
-        axios
-          .post(
-            'https://disability-map.azurewebsites.net/Photo',
-            userData.photo
-          )
-          .then((response) => {
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error(error);
-            setHelperText(error.response.data.message);
-          });
-      }
     }
   }
 
@@ -116,7 +110,7 @@ function RegisterForm(props: RegisterFormProps) {
           component="label"
           endIcon={<AddAPhotoIcon />}
         >
-          {userData.photo ? userData.photo.name : `Upload Profile picture`}
+          {photoUrl ? `Change Photo` : `Upload Profile picture`}
           <input type="file" onChange={uploadPhoto} hidden />
         </Button>
         <FormControl className="form__text-fields" onChange={handleFormChange}>

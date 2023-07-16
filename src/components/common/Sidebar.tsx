@@ -1,11 +1,11 @@
 import { Accordion, AccordionSummary } from '@mui/material';
-import PlacesFilter from './PlacesFilter';
-import Profile from './user/Profile';
-import MyPlaces from './MyPlaces';
+import PlacesFilter from '../PlacesFilter';
+import Profile from '../user/Profile';
+import MyPlaces from '../MyPlaces';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useContext } from 'react';
-import UserContext from '../context/UserContext';
-import MyReservations from './MyReservations';
+import UserContext from '../../context/UserContext';
+import MyReservations from '../MyReservations';
 
 type SidebarProps = {
   handleFacilitySearch: (valuesArray: string[]) => void;

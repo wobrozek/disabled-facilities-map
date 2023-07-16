@@ -3,9 +3,9 @@ import { useCookies } from 'react-cookie';
 import MobileNavbar from './components/MobileNavbar';
 import UserContext from './context/UserContext';
 import MapComponent from './components/map/MapComponent';
-import Sidebar from './components/Sidebar';
-import PlaceDialog from './components/PlaceDialog';
-import FacilityDialog from './components/FacilityDialog';
+import Sidebar from './components/common/Sidebar';
+import PlaceDialog from './components/common/PlaceDialog';
+import FacilityDialog from './components/common/FacilityDialog';
 import 'leaflet/dist/leaflet.css';
 import './styles/App.scss';
 

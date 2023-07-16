@@ -12,8 +12,13 @@ type ProfileProps = {
 function Profile(props: ProfileProps) {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [userPhoto, setUserPhoto] = useState('');
 
   const isLoggedIn = useContext(UserContext);
+
+  function getUserPhoto(imgPath: string) {
+    setUserPhoto(imgPath);
+  }
 
   function toggleRegisterDialog() {
     setIsRegisterOpen((prev) => !prev);
@@ -33,7 +38,10 @@ function Profile(props: ProfileProps) {
     <div className="profile">
       {isLoggedIn && (
         <div className="profile__logged-in">
-          <Avatar sx={{ width: '100px', height: '100px' }} />
+          <Avatar
+            sx={{ width: '100px', height: '100px' }}
+            src={userPhoto ? userPhoto : undefined}
+          />
           <Button variant="contained" onClick={logOut}>
             Log Out
           </Button>
@@ -57,6 +65,7 @@ function Profile(props: ProfileProps) {
         isLoginOpen={isLoginOpen}
         handleClose={toggleLoginDialog}
         handleLogIn={props.handleLogIn}
+        handleGetUserPhoto={getUserPhoto}
       />
     </div>
   );

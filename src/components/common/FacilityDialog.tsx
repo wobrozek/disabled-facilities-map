@@ -2,8 +2,8 @@ import { useContext, useState } from 'react';
 import { Button } from '@mui/material';
 import { NoPhotography, LocalPhone, LocationOn } from '@mui/icons-material/';
 import RatePlace from './RatePlace';
-import PlaceReservationDialog from './PlaceReservationDialog';
-import UserContext from '../context/UserContext';
+import PlaceReservationDialog from '../PlaceReservationDialog';
+import UserContext from '../../context/UserContext';
 
 type FacilityDialogProps = {
   facility: any;

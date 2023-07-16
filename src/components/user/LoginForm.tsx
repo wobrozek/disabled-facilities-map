@@ -14,6 +14,7 @@ type LoginForm = {
   isLoginOpen: boolean;
   handleClose: () => void;
   handleLogIn: () => void;
+  handleGetUserPhoto: (imgPath: string) => void;
 };
 
 function LoginForm(props: LoginForm) {
@@ -45,7 +46,9 @@ function LoginForm(props: LoginForm) {
         password: userAuth.password,
       })
       .then((response) => {
+        console.log(response);
         props.handleLogIn();
+        props.handleGetUserPhoto(response.data.data.imagePath);
         setHelperText('');
         props.handleClose();
         setIsLoading(false);
