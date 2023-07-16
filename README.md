@@ -22,4 +22,4 @@ _npm install_
 
 To see live version of project check out: www.react-disabiltymap.azurewebsites.net
 
- backend repo: https://github.com/wobrozek/disability-map-api
+ Backend repo: https://github.com/wobrozek/disability-map-api
