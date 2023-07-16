@@ -10,7 +10,11 @@ import {
 } from '@mui/material';
 import { AddLocationAlt, Close, Done } from '@mui/icons-material/';
 
-function AddPlace() {
+type AddPlaceProps = {
+  handleSetAddedPlace: (place: any) => void;
+};
+
+function AddPlace(props: AddPlaceProps) {
   const [displayMarker, setDisplayMarker] = useState(false);
   const [displayDialog, setDisplayDialog] = useState(false);
   const [displayForm, setDisplayForm] = useState(false);
@@ -81,6 +85,7 @@ function AddPlace() {
         position={position}
         isOpen={displayForm}
         handleClose={closeSubmittedForm}
+        handleSetAddedPlace={props.handleSetAddedPlace}
       />
       {displayMarker && (
         <Marker

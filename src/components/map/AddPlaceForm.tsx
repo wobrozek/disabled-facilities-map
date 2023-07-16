@@ -15,6 +15,7 @@ type AddPlaceFormProps = {
   position: [number, number] | null;
   isOpen: boolean;
   handleClose: () => void;
+  handleSetAddedPlace: (place: any) => void;
 };
 
 function AddPlaceForm(props: AddPlaceFormProps) {
@@ -91,6 +92,7 @@ function AddPlaceForm(props: AddPlaceFormProps) {
       )
       .then((response) => {
         console.log(response.data);
+        props.handleSetAddedPlace(response.data);
         props.handleClose();
       })
       .catch((error) => {

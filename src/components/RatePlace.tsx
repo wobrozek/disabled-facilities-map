@@ -33,6 +33,10 @@ function RatePlace(props: RatePlaceProps) {
       });
   }, [props.id, rateValues]);
 
+  useEffect(() => {
+    setRateValues(0);
+  }, [props.id]);
+
   function handleLike() {
     axios
       .put(
@@ -47,7 +51,7 @@ function RatePlace(props: RatePlaceProps) {
       )
       .then((response) => {
         console.log(response);
-        setRateValues(response.data.data);
+        rateValues === 0 ? setRateValues(1) : setRateValues(0);
       })
       .catch((error) => {
         console.error(error);

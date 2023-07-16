@@ -1,22 +1,25 @@
 import { useEffect, useState } from 'react';
-import { Cookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
+import MobileNavbar from './components/MobileNavbar';
 import UserContext from './context/UserContext';
 import MapComponent from './components/map/MapComponent';
 import Sidebar from './components/Sidebar';
 import PlaceDialog from './components/PlaceDialog';
+import FacilityDialog from './components/FacilityDialog';
 import 'leaflet/dist/leaflet.css';
 import './styles/App.scss';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [facilitiesSearch, setFacilitiesSearch] = useState<string[]>([]);
   const [placesSearch, setPlacesSearch] = useState<string[]>([]);
-  const [currentDialogId, setCurrentDialogId] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPlaceId, setCurrentPlaceId] = useState('');
+  const [currentFacility, setCurrentFacility] = useState(null);
+  const [addedPlace, setAddedPlace] = useState<any>();
+  const [cookies] = useCookies(['userToken']);
 
   useEffect(() => {
-    const cookies = new Cookies();
-    const token = cookies.get('userToken');
-    if (token) {
+    if (cookies.userToken) {
       setIsLoggedIn(true);
     }
   }, []);
@@ -45,8 +48,18 @@ function App() {
     setPlacesSearch(categoriesArray);
   }
 
-  function getCurrentDialogId(value: string) {
-    setCurrentDialogId(value);
+  function getCurrentPlaceId(value: string) {
+    setCurrentFacility(null);
+    setCurrentPlaceId(value);
+  }
+
+  function getCurrentFacility(facility: any) {
+    setCurrentPlaceId('');
+    setCurrentFacility(facility);
+  }
+
+  function addPlace(place: any) {
+    setAddedPlace(place);
   }
 
   return (
@@ -56,15 +69,20 @@ function App() {
           handleFacilitySearch={getFacilitySearchValues}
           handlePlacesSearch={getPlacesCategories}
           handleLogIn={handleLogIn}
-          handleSetCurrentDialog={getCurrentDialogId}
+          handleSetCurrentDialog={getCurrentPlaceId}
+          addedPlace={addedPlace}
         />
         <div className="dialog-map-wrapper">
-          {currentDialogId && <PlaceDialog id={currentDialogId} />}
+          <MobileNavbar />
           <MapComponent
             searchValuesFacilities={facilitiesSearch}
             searchValuesPlaces={placesSearch}
-            handleSetCurrentDialogId={getCurrentDialogId}
+            handleSetCurrentPlaceId={getCurrentPlaceId}
+            handleSetCurrentFacility={getCurrentFacility}
+            handleSetAddedPlace={addPlace}
           />
+          {currentPlaceId && <PlaceDialog id={currentPlaceId} />}
+          {currentFacility && <FacilityDialog facility={currentFacility} />}
         </div>
       </UserContext.Provider>
     </div>

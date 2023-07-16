@@ -7,7 +7,7 @@ import { IconContext } from 'react-icons';
 
 type PlacesMarkersProps = {
   results: PlaceResult[];
-  handleSetCurrentDialogId: (id: string) => void;
+  handleSetCurrentPlaceId: (id: string) => void;
 };
 
 function PlacesMarkers(props: PlacesMarkersProps) {
@@ -35,11 +35,11 @@ function PlacesMarkers(props: PlacesMarkersProps) {
         icon={customPlaceIcon}
         eventHandlers={{
           click: () => {
-            props.handleSetCurrentDialogId(result.fsq_id);
+            props.handleSetCurrentPlaceId(result.fsq_id);
           },
           keydown: (e) => {
             if (e.originalEvent.key === 'Enter') {
-              props.handleSetCurrentDialogId(result.fsq_id);
+              props.handleSetCurrentPlaceId(result.fsq_id);
             }
           },
         }}

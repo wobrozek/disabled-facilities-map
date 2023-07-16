@@ -11,6 +11,7 @@ type SidebarProps = {
   handlePlacesSearch: (valuesArray: string[]) => void;
   handleLogIn: () => void;
   handleSetCurrentDialog: (value: string) => void;
+  addedPlace: any;
 };
 
 function Sidebar(props: SidebarProps) {
@@ -34,7 +35,7 @@ function Sidebar(props: SidebarProps) {
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <h2 className="sidebar__header">My Places</h2>
             </AccordionSummary>
-            <MyPlaces />
+            <MyPlaces addedPlace={props.addedPlace} />
           </Accordion>
         )}
       </div>

@@ -1,15 +1,18 @@
+import { useState } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Marker } from 'react-leaflet';
-import locations from '../../locations.json';
 import L from 'leaflet';
 import { FaWheelchair } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 
 type FacilityMarkersProps = {
-  searchValuesFacilities: string[];
+  results: any[];
+  handleSetCurrentFacility: (facility: any) => void;
 };
 
 function FacilityMarkers(props: FacilityMarkersProps) {
+  const [currentPlaceId, setCurrentPlaceId] = useState('');
+
   const customFacilityIcon = L.divIcon({
     className: 'custom-icon',
     html: renderToStaticMarkup(
@@ -21,21 +24,37 @@ function FacilityMarkers(props: FacilityMarkersProps) {
     ),
   });
 
-  const filteredPlaces = locations.filter((location) => {
-    return props.searchValuesFacilities.includes(location.type);
-  });
+  function chooseCurrentId(id: string) {
+    setCurrentPlaceId(id);
 
-  return filteredPlaces.map((location) => {
+    const choosenPlace = props.results.find(
+      (place) => place.placeId === currentPlaceId
+    );
+
+    props.handleSetCurrentFacility(choosenPlace);
+  }
+
+  return props.results.map((location) => {
     const latLngs: [number, number] = [
-      location.coordinates[0],
-      location.coordinates[1],
+      location.ll.latitude,
+      location.ll.longitude,
     ];
 
     return (
       <Marker
+        key={location.placeId}
         icon={customFacilityIcon}
-        key={location.id}
         position={latLngs}
+        eventHandlers={{
+          click: () => {
+            chooseCurrentId(location.placeId);
+          },
+          keydown: (e) => {
+            if (e.originalEvent.key === 'Enter') {
+              chooseCurrentId(location.placeId);
+            }
+          },
+        }}
       ></Marker>
     );
   });

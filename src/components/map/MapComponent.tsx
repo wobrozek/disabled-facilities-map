@@ -1,15 +1,20 @@
-import { useEffect, useState } from 'react';
-import 'leaflet/dist/leaflet.css';
+import { useContext, useEffect, useState } from 'react';
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
+import axios from 'axios';
+import * as qs from 'qs';
 import GeoSearch from './GeoSearch';
 import PlacesMarkers from './PlacesMarkers';
 import FacilityMarkers from './FacilityMarkers';
 import AddPlace from './AddPlace';
+import UserContext from '../../context/UserContext';
+import 'leaflet/dist/leaflet.css';
 
 type MapComponentProps = {
   searchValuesFacilities: string[];
   searchValuesPlaces: string[];
-  handleSetCurrentDialogId: (value: string) => void;
+  handleSetCurrentPlaceId: (value: string) => void;
+  handleSetCurrentFacility: (facility: any) => void;
+  handleSetAddedPlace: (place: any) => void;
 };
 
 function MapComponent(props: MapComponentProps) {
@@ -18,6 +23,8 @@ function MapComponent(props: MapComponentProps) {
   const [mapPosition, setMapPosition] = useState<[number, number]>([
     50.04, 19.94,
   ]);
+
+  const isLoggedIn = useContext(UserContext);
 
   const MapEvents = () => {
     useMapEvents({
@@ -30,35 +37,45 @@ function MapComponent(props: MapComponentProps) {
   };
 
   useEffect(() => {
-    async function placeSearch(
-      searchCategories: string[],
-      currentPosition: [number, number]
-    ) {
-      try {
-        const searchParams = new URLSearchParams({
-          categories: searchCategories.toString(),
-          ll: currentPosition.toString(),
-          limit: '20',
-          sort: 'DISTANCE',
-        });
-        const results = await fetch(
-          `https://api.foursquare.com/v3/places/search?${searchParams}`,
-          {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-              Authorization: import.meta.env.VITE_API_KEY,
-            },
-          }
-        );
-        const data = await results.json();
-        setPlaceResults(data.results);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    placeSearch(props.searchValuesPlaces, mapPosition);
+    axios
+      .get(`https://api.foursquare.com/v3/places/search`, {
+        params: {
+          categories: props.searchValuesPlaces.toString(),
+          ll: mapPosition.toString(),
+          limit: 20,
+        },
+        headers: {
+          Accept: 'application/json',
+          Authorization: import.meta.env.VITE_API_KEY,
+        },
+      })
+      .then((response) => {
+        setPlaceResults(response.data.results);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [props.searchValuesPlaces, mapPosition]);
+
+  useEffect(() => {
+    axios
+      .get('https://disability-map.azurewebsites.net/Place/GetByRadius', {
+        params: {
+          LL: mapPosition,
+          Radius: 100000,
+          PlaceType: 'elevators',
+        },
+        paramsSerializer: (params) => {
+          return qs.stringify(params);
+        },
+      })
+      .then((response) => {
+        setFacilityResults(response.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [mapPosition]);
 
   return (
     <div className="map">
@@ -74,14 +91,19 @@ function MapComponent(props: MapComponentProps) {
         />
         <MapEvents />
         <FacilityMarkers
-          searchValuesFacilities={props.searchValuesFacilities}
+          results={facilityResults}
+          handleSetCurrentFacility={props.handleSetCurrentFacility}
         />
         <PlacesMarkers
           results={placeResults}
-          handleSetCurrentDialogId={props.handleSetCurrentDialogId}
+          handleSetCurrentPlaceId={props.handleSetCurrentPlaceId}
         />
-        <AddPlace />
-        <GeoSearch />
+        <div className="map__buttons">
+          {isLoggedIn && (
+            <AddPlace handleSetAddedPlace={props.handleSetAddedPlace} />
+          )}
+          <GeoSearch />
+        </div>
       </MapContainer>
     </div>
   );
