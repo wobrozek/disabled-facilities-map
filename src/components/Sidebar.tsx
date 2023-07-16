@@ -5,6 +5,7 @@ import MyPlaces from './MyPlaces';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useContext } from 'react';
 import UserContext from '../context/UserContext';
+import MyReservations from './MyReservations';
 
 type SidebarProps = {
   handleFacilitySearch: (valuesArray: string[]) => void;
@@ -31,12 +32,20 @@ function Sidebar(props: SidebarProps) {
           />
         </Accordion>
         {isLoggedIn && (
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <h2 className="sidebar__header">My Places</h2>
-            </AccordionSummary>
-            <MyPlaces addedPlace={props.addedPlace} />
-          </Accordion>
+          <>
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <h2 className="sidebar__header">My Places</h2>
+              </AccordionSummary>
+              <MyPlaces addedPlace={props.addedPlace} />
+            </Accordion>
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <h2 className="sidebar__header">My Reservations</h2>
+              </AccordionSummary>
+              <MyReservations />
+            </Accordion>
+          </>
         )}
       </div>
     </div>

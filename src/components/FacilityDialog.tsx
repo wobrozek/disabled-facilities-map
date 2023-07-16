@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button } from '@mui/material';
 import { NoPhotography, LocalPhone, LocationOn } from '@mui/icons-material/';
 import RatePlace from './RatePlace';
 import PlaceReservationDialog from './PlaceReservationDialog';
+import UserContext from '../context/UserContext';
 
 type FacilityDialogProps = {
   facility: any;
@@ -10,6 +11,8 @@ type FacilityDialogProps = {
 
 function FacilityDialog(props: FacilityDialogProps) {
   const [isReservationOpened, setIsReservationOpened] = useState(false);
+
+  const isLoggedIn = useContext(UserContext);
 
   function closeDialog() {
     setIsReservationOpened(false);
@@ -22,7 +25,7 @@ function FacilityDialog(props: FacilityDialogProps) {
           <img
             className="dialog-popup__img"
             alt=""
-            src={`props.facility.imagePath`}
+            src={`${props.facility.imagePath}`}
           />
         ) : (
           <NoPhotography fontSize="large" />
@@ -40,14 +43,17 @@ function FacilityDialog(props: FacilityDialogProps) {
       </div>
       <div className="dialog-popup__user">
         <RatePlace id={props.facility.placeId} />
-        <Button
-          variant="contained"
-          onClick={() => {
-            setIsReservationOpened(true);
-          }}
-        >
-          Make Reservation
-        </Button>
+        {isLoggedIn && (
+          <Button
+            variant="contained"
+            onClick={() => {
+              setIsReservationOpened(true);
+            }}
+          >
+            Make Reservation
+          </Button>
+        )}
+
         <PlaceReservationDialog
           isReservationOpened={isReservationOpened}
           handleClose={closeDialog}

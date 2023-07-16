@@ -29,9 +29,7 @@ function MyPlaces(props: MyPlacesProps) {
   }, [props.addedPlace]);
 
   function deletePlace(id: string) {
-    const deleted = userPlaces.filter((place: any) => {
-      place.placeId !== id;
-    });
+    const deleted = userPlaces.filter((place: any) => place.placeId !== id);
 
     axios
       .delete(`https://disability-map.azurewebsites.net/Place/${id}`, {

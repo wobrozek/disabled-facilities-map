@@ -70,6 +70,7 @@ function MapComponent(props: MapComponentProps) {
         },
       })
       .then((response) => {
+        console.log(response);
         setFacilityResults(response.data.data);
       })
       .catch((error) => {
