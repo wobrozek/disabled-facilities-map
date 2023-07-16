@@ -35,7 +35,7 @@ function PlacesFilter(props: PlacesFilterProps) {
     'education',
     'health',
   ];
-  const facilities: string[] = ['elevators', 'restrooms'];
+  const facilities: string[] = ['elevators', 'restrooms', 'blindPlace'];
 
   const placesCheckboxes = places.map((place) => {
     return (
@@ -64,7 +64,7 @@ function PlacesFilter(props: PlacesFilterProps) {
             }
           />
         }
-        label={facility}
+        label={facility === 'blindPlace' ? 'blind facilities' : facility}
       />
     );
   });
@@ -124,7 +124,9 @@ function PlacesFilter(props: PlacesFilterProps) {
           <FormGroup onChange={handleFacilitiesFormChange} row={true}>
             {facilitiesCheckboxes}
           </FormGroup>
-          <Button type="submit">Search</Button>
+          <Button variant="outlined" type="submit">
+            Search
+          </Button>
         </FormControl>
       </form>
     </div>

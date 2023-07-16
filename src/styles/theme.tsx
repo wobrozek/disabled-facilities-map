@@ -4,11 +4,11 @@ import { grey, deepPurple } from '@mui/material/colors';
 const theme = createTheme({
   palette: {
     primary: {
-      main: grey[900],
-    },
-    secondary: {
       main: deepPurple[700],
     },
+  },
+  zIndex: {
+    modal: 30000,
   },
 });
 

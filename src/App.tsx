@@ -1,89 +1,102 @@
-import { useState, useEffect } from 'react';
-import MapComponent from './components/MapComponent';
-import DialogContext from './context/DialogContext';
-import Sidebar from './components/Sidebar';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import MobileNavbar from './components/MobileNavbar';
+import UserContext from './context/UserContext';
+import MapComponent from './components/map/MapComponent';
+import Sidebar from './components/common/Sidebar';
+import PlaceDialog from './components/common/PlaceDialog';
+import FacilityDialog from './components/common/FacilityDialog';
 import 'leaflet/dist/leaflet.css';
 import './styles/App.scss';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [facilitiesSearch, setFacilitiesSearch] = useState<string[]>([]);
   const [placesSearch, setPlacesSearch] = useState<string[]>([]);
-  const [myPlaces, setMyPlaces] = useState<
-    {
-      id: string;
-      name: string;
-      location: string;
-    }[]
-  >([]);
-  const [userCoordinates, setUserCoordinates] = useState<
-    [number, number] | undefined
-  >(undefined);
+  const [currentPlaceId, setCurrentPlaceId] = useState('');
+  const [currentFacility, setCurrentFacility] = useState(null);
+  const [addedPlace, setAddedPlace] = useState<any>();
+  const [addedReservation, setAddedReservation] = useState<any>();
+  const [cookies] = useCookies(['userToken']);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserCoordinates([latitude, longitude]);
-        },
-        (error) => {
-          console.error('Error getting geolocation:', error);
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
+    if (cookies.userToken) {
+      setIsLoggedIn(true);
     }
   }, []);
 
-  const categoryIds = {
-    restaurants: '13065',
-    shops: '17000',
-    bars: '13003',
-    entertainment: '10000',
-    education: '12013',
-    health: '15000',
-  };
+  function handleLogIn() {
+    setIsLoggedIn((prev) => !prev);
+  }
 
   function getFacilitySearchValues(valuesArray: string[]) {
     setFacilitiesSearch(valuesArray);
   }
 
   function getPlacesCategories(valuesArray: string[]) {
+    const categoryIDs = {
+      restaurants: '13065',
+      shops: '17000',
+      bars: '13003',
+      entertainment: '10000',
+      education: '12013',
+      health: '15000',
+    };
+
     const categoriesArray: string[] = valuesArray.map(
-      (value) => categoryIds[value as keyof typeof categoryIds]
+      (value) => categoryIDs[value as keyof typeof categoryIDs]
     );
     setPlacesSearch(categoriesArray);
   }
 
-  function addToFavorites(place: {
-    id: string;
-    name: string;
-    location: string;
-  }) {
-    setMyPlaces((prev) => [...prev, place]);
+  function getCurrentPlaceId(value: string) {
+    setCurrentFacility(null);
+    setCurrentPlaceId(value);
   }
 
-  function deletePlace(id: string) {
-    const updated = myPlaces.filter((place) => place.id !== id);
-    setMyPlaces(updated);
+  function getCurrentFacility(facility: any) {
+    setCurrentPlaceId('');
+    setCurrentFacility(facility);
+  }
+
+  function addPlace(place: any) {
+    setAddedPlace(place);
+  }
+
+  function addReservation(reservation: any) {
+    setAddedReservation(reservation);
   }
 
   return (
-    <>
-      <DialogContext.Provider value={myPlaces}>
+    <div className="app">
+      <UserContext.Provider value={isLoggedIn}>
         <Sidebar
           handleFacilitySearch={getFacilitySearchValues}
           handlePlacesSearch={getPlacesCategories}
-          handleDeletePlace={deletePlace}
+          handleLogIn={handleLogIn}
+          addedPlace={addedPlace}
+          addedReservation={addedReservation}
         />
-        <MapComponent
-          searchValuesFacilities={facilitiesSearch}
-          searchValuesPlaces={placesSearch as string[]}
-          handleAddToFavorites={addToFavorites}
-          userCoordinates={userCoordinates}
-        />
-      </DialogContext.Provider>
-    </>
+        <div className="dialog-map-wrapper">
+          <MobileNavbar />
+          <MapComponent
+            searchValuesFacilities={facilitiesSearch}
+            searchValuesPlaces={placesSearch}
+            handleSetCurrentPlaceId={getCurrentPlaceId}
+            handleSetCurrentFacility={getCurrentFacility}
+            handleSetAddedPlace={addPlace}
+            addedPlace={addedPlace}
+          />
+          {currentPlaceId && <PlaceDialog id={currentPlaceId} />}
+          {currentFacility && (
+            <FacilityDialog
+              facility={currentFacility}
+              handleAddReservation={addReservation}
+            />
+          )}
+        </div>
+      </UserContext.Provider>
+    </div>
   );
 }
 
