@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { IconButton } from '@mui/material/';
@@ -8,34 +8,39 @@ import {
   ThumbUpAlt,
   ThumbUpOffAlt,
 } from '@mui/icons-material';
+import UserContext from '../../context/UserContext';
 
 type RatePlaceProps = {
   id: string;
 };
 
 function RatePlace(props: RatePlaceProps) {
+  const [actions, setActions] = useState(0);
   const [rateValues, setRateValues] = useState(0);
   const [score, setScore] = useState({ likes: 0, dislikes: 0 });
   const [cookies] = useCookies(['userToken']);
 
+  const isLoggedIn = useContext(UserContext);
+
   useEffect(() => {
     axios
-      .get(`https://disability-map.azurewebsites.net/Score/${props.id}`)
+      .get(`https://disability-map.azurewebsites.net/Score/${props.id}`, {
+        headers: {
+          Authorization: `Bearer ${cookies.userToken}`,
+        },
+      })
       .then((response) => {
         console.log(response);
         setScore({
           likes: response.data.data.likes,
           dislikes: response.data.data.disLikes,
         });
+        setRateValues(response.data.data.userData);
       })
       .catch((err) => {
         console.error(err);
       });
-  }, [props.id, rateValues]);
-
-  useEffect(() => {
-    setRateValues(0);
-  }, [props.id]);
+  }, [props.id, rateValues, cookies.userToken, actions]);
 
   function handleLike() {
     axios
@@ -51,7 +56,7 @@ function RatePlace(props: RatePlaceProps) {
       )
       .then((response) => {
         console.log(response);
-        rateValues === 0 ? setRateValues(1) : setRateValues(0);
+        actions === 0 ? setActions(1) : setActions(0);
       })
       .catch((error) => {
         console.error(error);
@@ -72,7 +77,7 @@ function RatePlace(props: RatePlaceProps) {
       )
       .then((response) => {
         console.log(response);
-        rateValues === 0 ? setRateValues(-1) : setRateValues(0);
+        actions === 0 ? setActions(-1) : setActions(0);
       })
       .catch((error) => {
         console.error(error);
@@ -83,7 +88,7 @@ function RatePlace(props: RatePlaceProps) {
     <div className="rating">
       <div className="rating__thumb">
         {score.likes}
-        <IconButton onClick={handleLike}>
+        <IconButton disabled={!isLoggedIn} onClick={handleLike}>
           {rateValues === 1 ? (
             <ThumbUpAlt color="primary" />
           ) : (
@@ -92,7 +97,7 @@ function RatePlace(props: RatePlaceProps) {
         </IconButton>
       </div>
       <div className="rating__thumb">
-        <IconButton onClick={handleDislike}>
+        <IconButton disabled={!isLoggedIn} onClick={handleDislike}>
           {rateValues === -1 ? (
             <ThumbDownAlt color="primary" />
           ) : (

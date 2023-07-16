@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Cookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import { Avatar, Button } from '@mui/material/';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
@@ -13,6 +13,9 @@ function Profile(props: ProfileProps) {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [userPhoto, setUserPhoto] = useState('');
+  const [cookies, , removeCookie] = useCookies(['userToken']);
+
+  console.log(cookies.userToken);
 
   const isLoggedIn = useContext(UserContext);
 
@@ -29,8 +32,7 @@ function Profile(props: ProfileProps) {
   }
 
   function logOut() {
-    const cookies = new Cookies();
-    cookies.remove('userToken');
+    removeCookie('userToken');
     props.handleLogIn();
   }
 

@@ -8,7 +8,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
-import { Cookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 
 type LoginForm = {
   isLoginOpen: boolean;
@@ -26,6 +26,7 @@ function LoginForm(props: LoginForm) {
   );
   const [helperText, setHelperText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [cookies, setCookie] = useCookies(['userToken']);
 
   function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
     setUserAuth((prev) => {
@@ -39,7 +40,6 @@ function LoginForm(props: LoginForm) {
   function submitForm(e: React.FormEvent<EventTarget>) {
     e.preventDefault();
     setIsLoading(true);
-    const cookies = new Cookies();
     axios
       .post('https://disability-map.azurewebsites.net/Access/Login', {
         login: userAuth.login,
@@ -52,7 +52,7 @@ function LoginForm(props: LoginForm) {
         setHelperText('');
         props.handleClose();
         setIsLoading(false);
-        cookies.set('userToken', response.data.data.token);
+        setCookie('userToken', response.data.data.token);
       })
       .catch((error) => {
         console.error(error);
