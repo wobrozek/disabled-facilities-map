@@ -15,8 +15,6 @@ function Profile(props: ProfileProps) {
   const [userPhoto, setUserPhoto] = useState('');
   const [cookies, , removeCookie] = useCookies(['userToken']);
 
-  console.log(cookies.userToken);
-
   const isLoggedIn = useContext(UserContext);
 
   function getUserPhoto(imgPath: string) {

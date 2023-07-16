@@ -64,7 +64,7 @@ function MapComponent(props: MapComponentProps) {
         params: {
           LL: mapPosition,
           Radius: 100000,
-          PlaceType: 'elevators',
+          PlaceType: props.searchValuesFacilities,
         },
         paramsSerializer: (params) => {
           return qs.stringify(params);
@@ -77,7 +77,7 @@ function MapComponent(props: MapComponentProps) {
       .catch((error) => {
         console.error(error);
       });
-  }, [mapPosition, props.addedPlace]);
+  }, [mapPosition, props.addedPlace, props.searchValuesFacilities]);
 
   return (
     <div className="map">
