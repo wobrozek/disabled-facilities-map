@@ -98,7 +98,7 @@ function PlacesFilter(props: PlacesFilterProps) {
       },
       []
     );
-    console.log(facilitieSearchValuesArray);
+
     const placesSearchValuesArray = Object.entries(placesOptions).reduce(
       (acc: string[], [key, value]) => {
         if (value) {
@@ -108,7 +108,6 @@ function PlacesFilter(props: PlacesFilterProps) {
       },
       []
     );
-    console.log(placesSearchValuesArray);
     props.handleFacilitySearch(facilitieSearchValuesArray);
     props.handlePlacesSearch(placesSearchValuesArray);
   }

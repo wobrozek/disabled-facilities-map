@@ -1,10 +1,17 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Button } from '@mui/material';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
 import PlaceDialogSkeleton from './PlaceDialogSkeleton';
+import DialogContext from '../context/DialogContext';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 type PlaceDialogProps = {
   id: string;
+  handleAddToFavorites: (place: {
+    id: string;
+    name: string;
+    location: string;
+  }) => void;
 };
 
 type Result = {
@@ -22,6 +29,8 @@ type Result = {
 function PlaceDialog(props: PlaceDialogProps) {
   const [results, setResults] = useState<Result>();
   const [isLoading, setIsLoading] = useState(false);
+
+  const myPlaces = useContext(DialogContext);
 
   useEffect(() => {
     async function getPlaceDetails(placeId: string) {
@@ -52,6 +61,20 @@ function PlaceDialog(props: PlaceDialogProps) {
     }
   }, [props.id]);
 
+  function addToFavoritePlaces() {
+    props.handleAddToFavorites({
+      id: props.id,
+      name: results?.name || '',
+      location: results?.location.formatted_address || '',
+    });
+  }
+
+  const checkIfPlaceAdded = (placeId: string) => {
+    return myPlaces?.some((place) => place.id === placeId);
+  };
+
+  const isPlaceAdded = checkIfPlaceAdded(props.id);
+
   return (
     <section className="dialog-popup">
       {isLoading && <PlaceDialogSkeleton />}
@@ -76,8 +99,15 @@ function PlaceDialog(props: PlaceDialogProps) {
             </a>
           </div>
           <div className="dialog-popup__user">
-            <p>Log in to your account to be able to rate and add new places</p>
-            <Button>Log In</Button>
+            {isPlaceAdded ? (
+              <div className="dialog-popup__added">
+                Added to Favorites <FavoriteBorderIcon />{' '}
+              </div>
+            ) : (
+              <Button onClick={addToFavoritePlaces} variant="outlined">
+                Add to your places
+              </Button>
+            )}
           </div>
         </>
       )}

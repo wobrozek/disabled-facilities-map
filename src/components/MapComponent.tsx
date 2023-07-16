@@ -1,19 +1,19 @@
-import { useEffect, useState, useMemo } from 'react';
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-} from 'react-leaflet';
-import { Place } from '../types';
-import PlaceDialog from './PlaceDialog';
-import locations from '../locations.json';
+import { useEffect, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { PlaceResult } from '../types';
+import PlaceDialog from './PlaceDialog';
+import FacilityMarkers from './FacilityMarkers';
 
 type MapComponentProps = {
   searchValuesFacilities: string[];
   searchValuesPlaces: string[];
+  handleAddToFavorites: (place: {
+    id: string;
+    name: string;
+    location: string;
+  }) => void;
+  userCoordinates: [number, number] | undefined;
 };
 
 function MapComponent(props: MapComponentProps) {
@@ -68,7 +68,7 @@ function MapComponent(props: MapComponentProps) {
     placeSearch(props.searchValuesPlaces, mapPosition);
   }, [props.searchValuesPlaces, mapPosition]);
 
-  const placesMarkers = results.map((result: Place) => {
+  const placesMarkers = results.map((result: PlaceResult) => {
     const latLngs: [number, number] = [
       result.geocodes.main.latitude,
       result.geocodes.main.longitude,
@@ -87,36 +87,28 @@ function MapComponent(props: MapComponentProps) {
     );
   });
 
-  const filteredPlaces = locations.filter((location) => {
-    return props.searchValuesFacilities.includes(location.type);
-  });
-
-  const facilitiesMarkers = filteredPlaces.map((location) => {
-    const latLngs: [number, number] = [
-      location.coordinates[0],
-      location.coordinates[1],
-    ];
-
-    return (
-      <Marker key={location.id} position={latLngs}>
-        <Popup className="popup">
-          <h2 className="popup__title">{location.name}</h2>
-          <p className="popup__phoneNumber">{location.phoneNumber}</p>
-        </Popup>
-      </Marker>
-    );
-  });
-
+  console.log(props.userCoordinates);
   return (
     <div className="map">
-      <MapContainer center={[50.04, 19.94]} zoom={13} scrollWheelZoom={true}>
+      <MapContainer
+        center={
+          props.userCoordinates ? props.userCoordinates : [50.049683, 19.944544]
+        }
+        zoom={13}
+        scrollWheelZoom={true}
+      >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapEvents />
-        {facilitiesMarkers}
-        <PlaceDialog id={currentDialogId} />
+        <FacilityMarkers
+          searchValuesFacilities={props.searchValuesFacilities}
+        />
+        <PlaceDialog
+          id={currentDialogId}
+          handleAddToFavorites={props.handleAddToFavorites}
+        />
         {placesMarkers}
       </MapContainer>
     </div>
