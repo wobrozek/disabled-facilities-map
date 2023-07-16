@@ -11,8 +11,8 @@ type SidebarProps = {
   handleFacilitySearch: (valuesArray: string[]) => void;
   handlePlacesSearch: (valuesArray: string[]) => void;
   handleLogIn: () => void;
-  handleSetCurrentDialog: (value: string) => void;
   addedPlace: any;
+  addedReservation: any;
 };
 
 function Sidebar(props: SidebarProps) {
@@ -43,7 +43,7 @@ function Sidebar(props: SidebarProps) {
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <h2 className="sidebar__header">My Reservations</h2>
               </AccordionSummary>
-              <MyReservations />
+              <MyReservations addedReservation={props.addedReservation} />
             </Accordion>
           </>
         )}

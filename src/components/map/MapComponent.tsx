@@ -15,6 +15,7 @@ type MapComponentProps = {
   handleSetCurrentPlaceId: (value: string) => void;
   handleSetCurrentFacility: (facility: any) => void;
   handleSetAddedPlace: (place: any) => void;
+  addedPlace: any;
 };
 
 function MapComponent(props: MapComponentProps) {
@@ -76,7 +77,7 @@ function MapComponent(props: MapComponentProps) {
       .catch((error) => {
         console.error(error);
       });
-  }, [mapPosition]);
+  }, [mapPosition, props.addedPlace]);
 
   return (
     <div className="map">

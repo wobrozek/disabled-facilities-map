@@ -16,6 +16,7 @@ function App() {
   const [currentPlaceId, setCurrentPlaceId] = useState('');
   const [currentFacility, setCurrentFacility] = useState(null);
   const [addedPlace, setAddedPlace] = useState<any>();
+  const [addedReservation, setAddedReservation] = useState<any>();
   const [cookies] = useCookies(['userToken']);
 
   useEffect(() => {
@@ -62,6 +63,10 @@ function App() {
     setAddedPlace(place);
   }
 
+  function addReservation(reservation: any) {
+    setAddedReservation(reservation);
+  }
+
   return (
     <div className="app">
       <UserContext.Provider value={isLoggedIn}>
@@ -69,8 +74,8 @@ function App() {
           handleFacilitySearch={getFacilitySearchValues}
           handlePlacesSearch={getPlacesCategories}
           handleLogIn={handleLogIn}
-          handleSetCurrentDialog={getCurrentPlaceId}
           addedPlace={addedPlace}
+          addedReservation={addedReservation}
         />
         <div className="dialog-map-wrapper">
           <MobileNavbar />
@@ -80,9 +85,15 @@ function App() {
             handleSetCurrentPlaceId={getCurrentPlaceId}
             handleSetCurrentFacility={getCurrentFacility}
             handleSetAddedPlace={addPlace}
+            addedPlace={addedPlace}
           />
           {currentPlaceId && <PlaceDialog id={currentPlaceId} />}
-          {currentFacility && <FacilityDialog facility={currentFacility} />}
+          {currentFacility && (
+            <FacilityDialog
+              facility={currentFacility}
+              handleAddReservation={addReservation}
+            />
+          )}
         </div>
       </UserContext.Provider>
     </div>

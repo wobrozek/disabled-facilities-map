@@ -5,7 +5,11 @@ import dayjs from 'dayjs';
 import { List, ListItem, IconButton, ListItemText } from '@mui/material/';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 
-function MyReservations() {
+type MyReservationsProps = {
+  addedReservation: any;
+};
+
+function MyReservations(props: MyReservationsProps) {
   const [userReservations, setUserReservations] = useState([]);
   const [cookies] = useCookies(['userToken']);
 
@@ -21,12 +25,13 @@ function MyReservations() {
         setUserReservations(response.data.data);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [props.addedReservation]);
 
-  function cancelReservation(id: string, seq: number) {
-    const deleted = userReservations.filter(
-      (reservation: any) => reservation.place.placeId !== id
-    );
+  function cancelReservation(seq: number) {
+    const deleted = userReservations.filter((reservation: any) => {
+      return reservation.seq !== seq;
+    });
+
     axios
       .delete('https://disability-map.azurewebsites.net/Reservation', {
         params: {
@@ -40,21 +45,27 @@ function MyReservations() {
         console.log(response);
         setUserReservations(deleted);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
-  const listOfReservations = userReservations.map((reservation: any) => {
+  const actualReservations = userReservations.filter((reservation: any) => {
+    return reservation.unixTimestamp > dayjs().unix();
+  });
+
+  const listOfReservations = actualReservations.map((reservation: any) => {
     const date = dayjs.unix(reservation.unixTimestamp).format('DD-MM-YY HH:mm');
 
     return (
       <ListItem
-        key={reservation.place.placeId}
+        key={reservation.seq}
         secondaryAction={
           <IconButton
             edge="end"
             aria-label="delete"
             onClick={() => {
-              cancelReservation(reservation.place.placeId, reservation.seq);
+              cancelReservation(reservation.seq);
             }}
           >
             <EventBusyIcon />
@@ -62,7 +73,7 @@ function MyReservations() {
         }
       >
         <ListItemText
-          primary={`${reservation.place.name} ${reservation.place.adress}`}
+          primary={`${reservation.place.name} - ${reservation.place.adress}`}
           secondary={date}
         ></ListItemText>
       </ListItem>
@@ -71,7 +82,6 @@ function MyReservations() {
 
   return (
     <div className="my-reservations">
-      {!userReservations.length && `You haven't made any reservations yet`}
       <List>{listOfReservations}</List>
     </div>
   );

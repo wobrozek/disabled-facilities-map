@@ -7,6 +7,7 @@ import UserContext from '../context/UserContext';
 
 type FacilityDialogProps = {
   facility: any;
+  handleAddReservation: (reservation: any) => void;
 };
 
 function FacilityDialog(props: FacilityDialogProps) {
@@ -57,6 +58,7 @@ function FacilityDialog(props: FacilityDialogProps) {
         <PlaceReservationDialog
           isReservationOpened={isReservationOpened}
           handleClose={closeDialog}
+          handleAddReservation={props.handleAddReservation}
           id={props.facility.placeId}
         />
       </div>

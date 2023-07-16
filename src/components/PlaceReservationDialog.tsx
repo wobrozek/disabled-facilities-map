@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { Dialog } from '@mui/material';
 import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { Button } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -12,6 +13,7 @@ type PlaceReservationDialogProps = {
   isReservationOpened: boolean;
   handleClose: () => void;
   id: string;
+  handleAddReservation: (reservation: any) => void;
 };
 
 function PlaceReservationDialog(props: PlaceReservationDialogProps) {
@@ -46,6 +48,7 @@ function PlaceReservationDialog(props: PlaceReservationDialogProps) {
         )
         .then((response) => {
           console.log(response);
+          props.handleAddReservation(response.data);
           closeReservation();
         })
         .catch((error) => {
@@ -60,6 +63,8 @@ function PlaceReservationDialog(props: PlaceReservationDialogProps) {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateTimePicker
             ampm={false}
+            minDate={dayjs()}
+            maxDate={dayjs().add(90, 'day')}
             format="DD/MM/YYYY hh/mm"
             value={date}
             onChange={handleDateChange}

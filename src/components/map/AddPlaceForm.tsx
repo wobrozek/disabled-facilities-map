@@ -92,7 +92,7 @@ function AddPlaceForm(props: AddPlaceFormProps) {
       )
       .then((response) => {
         console.log(response.data);
-        props.handleSetAddedPlace(response.data);
+        props.handleSetAddedPlace(response.data.data);
         props.handleClose();
       })
       .catch((error) => {
