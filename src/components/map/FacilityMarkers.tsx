@@ -49,9 +49,9 @@ function FacilityMarkers(props: FacilityMarkersProps) {
     const rating = placesRating.find((place: any) => place.placeId === placeId);
 
     function getIconColor(rating: any) {
-      if (rating.likes < rating.disLikes) {
+      if (rating && rating.likes < rating.disLikes) {
         return 'red';
-      } else if (rating.likes > rating.disLikes) {
+      } else if (rating && rating.likes > rating.disLikes) {
         return 'green';
       } else {
         return 'orange';
