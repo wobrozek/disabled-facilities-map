@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useApi } from '../../hooks/useApi';
 import { Dialog, TextField, Button, FormControl } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import axios from 'axios';
@@ -21,6 +22,16 @@ function RegisterForm(props: RegisterFormProps) {
     email: '',
     password: '',
     confirmPassword: '',
+  });
+  const { data, error, isLoading, sendData } = useApi({
+    method: 'post',
+    url: '/Access/Register',
+    data: {
+      login: userData.login,
+      email: userData.email,
+      password: userData.password,
+      imagePath: photoUrl,
+    },
   });
 
   function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -76,29 +87,19 @@ function RegisterForm(props: RegisterFormProps) {
     return true;
   }
 
-  function handleSubmit(e: React.FormEvent<EventTarget>) {
+  async function handleSubmit(e: React.FormEvent<EventTarget>) {
     e.preventDefault();
     const isPasswordValid = validatePasswords(
       userData.password,
       userData.confirmPassword
     );
     if (isPasswordValid) {
-      axios
-        .post('https://disability-map.azurewebsites.net/Access/Register', {
-          login: userData.login,
-          email: userData.email,
-          password: userData.password,
-          imagePath: photoUrl,
-        })
-        .then((response) => {
-          console.log(response.data);
-          setHelperText('');
-          props.handleClose();
-        })
-        .catch((error) => {
-          console.error(error);
-          setHelperText(error.response.data.message);
-        });
+      try {
+        await sendData();
+        console.log(data);
+      } catch (err) {
+        console.error('Error:', err);
+      }
     }
   }
 
