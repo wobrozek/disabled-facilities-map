@@ -27,7 +27,8 @@
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.9.0",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "^4.2.1",
+    "react-query": "^3.39.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
