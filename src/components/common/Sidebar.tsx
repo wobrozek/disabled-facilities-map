@@ -10,7 +10,7 @@ import MyReservations from '../MyReservations';
 type SidebarProps = {
   handleFacilitySearch: (valuesArray: string[]) => void;
   handlePlacesSearch: (valuesArray: string[]) => void;
-  handleLogIn: () => void;
+  handleLogIn: (token: string) => void;
   addedPlace: any;
   addedReservation: any;
 };

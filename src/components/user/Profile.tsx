@@ -6,7 +6,7 @@ import LoginForm from './LoginForm';
 import UserContext from '../../context/UserContext';
 
 type ProfileProps = {
-  handleLogIn: () => void;
+  handleLogIn: (token: string) => void;
 };
 
 function Profile(props: ProfileProps) {
@@ -31,7 +31,6 @@ function Profile(props: ProfileProps) {
 
   function logOut() {
     removeCookie('userToken');
-    props.handleLogIn();
   }
 
   return (
