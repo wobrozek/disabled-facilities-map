@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-import axios from 'axios';
+import axiosConfig from '../api/axiosConfig';
 import { List, ListItem, IconButton, ListItemText } from '@mui/material/';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -13,8 +13,8 @@ function MyPlaces(props: MyPlacesProps) {
   const [cookies] = useCookies(['userToken']);
 
   useEffect(() => {
-    axios
-      .get('https://disability-map.azurewebsites.net/User/Places', {
+    axiosConfig
+      .get('/User/Places', {
         headers: {
           Authorization: `Bearer ${cookies.userToken}`,
         },
@@ -30,9 +30,8 @@ function MyPlaces(props: MyPlacesProps) {
 
   function deletePlace(id: string) {
     const deleted = userPlaces.filter((place: any) => place.placeId !== id);
-
-    axios
-      .delete(`https://disability-map.azurewebsites.net/Place/${id}`, {
+    axiosConfig
+      .delete(`/Place/${id}`, {
         headers: {
           Authorization: `Bearer ${cookies.userToken}`,
         },

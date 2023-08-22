@@ -31,7 +31,6 @@ function LoginForm(props: LoginForm) {
       return axiosConfig.post('/Access/Login/', userData);
     },
     onSuccess: (data) => {
-      console.log(data);
       props.handleClose();
       setHelperText('');
       setUserAuth({

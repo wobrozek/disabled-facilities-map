@@ -1,5 +1,5 @@
 import { SetStateAction, useState } from 'react';
-import axios from 'axios';
+import axiosConfig from '../api/axiosConfig';
 import { useCookies } from 'react-cookie';
 import { Dialog } from '@mui/material';
 import { Dayjs } from 'dayjs';
@@ -33,9 +33,9 @@ function PlaceReservationDialog(props: PlaceReservationDialogProps) {
     e.preventDefault();
     if (date) {
       const unixTimeStamp = date.unix();
-      axios
+      axiosConfig
         .post(
-          'https://disability-map.azurewebsites.net/Reservation',
+          '/Reservation',
           {
             placeId: props.id,
             unixTimeStamp,

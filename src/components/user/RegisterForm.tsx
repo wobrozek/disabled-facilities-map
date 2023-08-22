@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import axiosConfig from '../../api/axiosConfig';
+
 type RegisterFormProps = {
   isRegisterOpen: boolean;
   handleClose: () => void;
@@ -55,13 +56,12 @@ function RegisterForm(props: RegisterFormProps) {
       const formData = new FormData();
       formData.append('image', files[0]);
       axiosConfig
-        .post('https://disability-map.azurewebsites.net/Photo', formData, {
+        .post('/Photo/', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         })
         .then((response) => {
-          console.log(response);
           setPhotoUrl(response.data.data);
         })
         .catch((err) => {
