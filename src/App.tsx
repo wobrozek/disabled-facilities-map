@@ -81,7 +81,13 @@ function App() {
           addedReservation={addedReservation}
         />
         <div className="dialog-map-wrapper">
-          <MobileNavbar />
+          <MobileNavbar
+            handleFacilitySearch={getFacilitySearchValues}
+            handlePlacesSearch={getPlacesCategories}
+            handleLogIn={handleLogIn}
+            addedPlace={addedPlace}
+            addedReservation={addedReservation}
+          />
           <MapComponent
             searchValuesFacilities={facilitiesSearch}
             searchValuesPlaces={placesSearch}
