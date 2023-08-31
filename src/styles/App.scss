@@ -167,6 +167,14 @@
   }
 }
 
+.my-places {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  text-align: center;
+}
+
 .rating {
   border: 2px solid var(--purple-primary);
   display: flex;
