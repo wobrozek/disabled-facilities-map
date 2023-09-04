@@ -71,6 +71,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
+
 }
 
 .places-filter {
@@ -166,6 +167,14 @@
   }
 }
 
+.my-places {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  text-align: center;
+}
+
 .rating {
   border: 2px solid var(--purple-primary);
   display: flex;
@@ -184,6 +193,10 @@
 
 }
 
+.drawer {
+  display: none;
+}
+
 .mobile-navbar {
   display: none;
 }
@@ -197,31 +210,76 @@
 
   .dialog-map-wrapper {
     height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
-
 
   .sidebar {
     display: none;
+  
+    &__header {
+      line-height: 2;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  
+    &__accordion {
+      max-height: 80vh;
+      background-color: var(--popup-background-color);
+      overflow-y: scroll;
+    }
   }
+  
 
   .mobile-navbar {
     display: block;
-    height: 5vh;
+
+    &__toolbar {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .form {
+    min-width: 200px;
+    padding: 2rem 2rem 1rem 2rem;
+  }
+
+  .profile {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+  
+    &__logged-in {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+      gap: 1rem;
+    }
+  
+    &__buttons{
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .6rem;
+    }
   }
 
   .map {
-    height: 70vh;
+    height: 100%;
 
     &__buttons {
       flex-direction: column;
+      gap: .5rem;
     }
   }
 
   .dialog-popup {
-    height: 25vh;
     padding: 1rem;
     display: flex;
     justify-content: space-around;
+    position: static;
+    gap: 10px;
 
     &__photo {
       display: none;
@@ -239,6 +297,35 @@
       font-size: 1rem;
       gap: 5px;
     }
+  }
+
+  .drawer {
+    display: block;
+
+    &__items {
+      display: flex;
+      flex-direction: column;
+      gap:  2rem;
+      align-items: end;
+    }
+  }
+
+  .rating {
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: .0 5px;
+    border-radius: 5px;
+    box-shadow: 6px 16px 14px -13px rgba(0, 0, 0, 1);
+  
+    &__thumb {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+    }
+  
   }
 
   

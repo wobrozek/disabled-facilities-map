@@ -1,5 +1,7 @@
 import { useState, useMemo, useRef } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { Marker, useMap } from 'react-leaflet';
+import L from 'leaflet';
 import AddPlaceForm from './AddPlaceForm';
 import {
   Button,
@@ -9,6 +11,8 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { AddLocationAlt, Close, Done } from '@mui/icons-material/';
+import { IconContext } from 'react-icons';
+import { MdOutlineAddLocationAlt } from 'react-icons/md';
 
 type AddPlaceProps = {
   handleSetAddedPlace: (place: any) => void;
@@ -52,6 +56,17 @@ function AddPlace(props: AddPlaceProps) {
     []
   );
 
+  const customAddPlaceIcon = L.divIcon({
+    className: 'custom-icon',
+    html: renderToStaticMarkup(
+      <IconContext.Provider
+        value={{ color: 'black', className: 'custom-icon__icon' }}
+      >
+        <MdOutlineAddLocationAlt fontSize={45} />
+      </IconContext.Provider>
+    ),
+  });
+
   return (
     <>
       <div className="add-place-button">
@@ -91,6 +106,7 @@ function AddPlace(props: AddPlaceProps) {
         <Marker
           position={position ? position : defaultCenter}
           eventHandlers={eventHandlers}
+          icon={customAddPlaceIcon}
           draggable={true}
           ref={markerRef}
         ></Marker>

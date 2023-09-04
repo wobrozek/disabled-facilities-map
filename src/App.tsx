@@ -17,16 +17,19 @@ function App() {
   const [currentFacility, setCurrentFacility] = useState(null);
   const [addedPlace, setAddedPlace] = useState<any>();
   const [addedReservation, setAddedReservation] = useState<any>();
-  const [cookies] = useCookies(['userToken']);
+  const [cookies, setCookie] = useCookies(['userToken']);
 
   useEffect(() => {
     if (cookies.userToken) {
       setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
-  }, []);
+  }, [cookies]);
 
-  function handleLogIn() {
-    setIsLoggedIn((prev) => !prev);
+  function handleLogIn(token: string) {
+    setIsLoggedIn(true);
+    setCookie('userToken', token);
   }
 
   function getFacilitySearchValues(valuesArray: string[]) {
@@ -78,7 +81,13 @@ function App() {
           addedReservation={addedReservation}
         />
         <div className="dialog-map-wrapper">
-          <MobileNavbar />
+          <MobileNavbar
+            handleFacilitySearch={getFacilitySearchValues}
+            handlePlacesSearch={getPlacesCategories}
+            handleLogIn={handleLogIn}
+            addedPlace={addedPlace}
+            addedReservation={addedReservation}
+          />
           <MapComponent
             searchValuesFacilities={facilitiesSearch}
             searchValuesPlaces={placesSearch}

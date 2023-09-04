@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosConfig from '../../api/axiosConfig';
 import { useCookies } from 'react-cookie';
 import { IconButton } from '@mui/material/';
 import {
@@ -23,8 +23,8 @@ function RatePlace(props: RatePlaceProps) {
   const isLoggedIn = useContext(UserContext);
 
   useEffect(() => {
-    axios
-      .get(`https://disability-map.azurewebsites.net/Score/${props.id}`, {
+    axiosConfig
+      .get(`/Score/${props.id}`, {
         headers: {
           Authorization: `Bearer ${cookies.userToken}`,
         },
@@ -43,17 +43,13 @@ function RatePlace(props: RatePlaceProps) {
   }, [props.id, rateValues, cookies.userToken, actions]);
 
   function handleLike() {
-    axios
-      .put(
-        `https://disability-map.azurewebsites.net/Score/upvote/${props.id}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${cookies.userToken}`,
-            Accept: 'text/plain',
-          },
-        }
-      )
+    axiosConfig
+      .put(`/Score/upvote/${props.id}`, null, {
+        headers: {
+          Authorization: `Bearer ${cookies.userToken}`,
+          Accept: 'text/plain',
+        },
+      })
       .then((response) => {
         console.log(response);
         actions === 0 ? setActions(1) : setActions(0);
@@ -64,17 +60,13 @@ function RatePlace(props: RatePlaceProps) {
   }
 
   function handleDislike() {
-    axios
-      .put(
-        `https://disability-map.azurewebsites.net/Score/downvote/${props.id}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${cookies.userToken}`,
-            Accept: 'text/plain',
-          },
-        }
-      )
+    axiosConfig
+      .put(`/Score/downvote/${props.id}`, null, {
+        headers: {
+          Authorization: `Bearer ${cookies.userToken}`,
+          Accept: 'text/plain',
+        },
+      })
       .then((response) => {
         console.log(response);
         actions === 0 ? setActions(-1) : setActions(0);

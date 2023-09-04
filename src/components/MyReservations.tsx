@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-import axios from 'axios';
+import axiosConfig from '../api/axiosConfig';
 import dayjs from 'dayjs';
 import { List, ListItem, IconButton, ListItemText } from '@mui/material/';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
@@ -14,17 +14,18 @@ function MyReservations(props: MyReservationsProps) {
   const [cookies] = useCookies(['userToken']);
 
   useEffect(() => {
-    axios
-      .get('https://disability-map.azurewebsites.net/User/Reservations', {
+    axiosConfig
+      .get('/User/Reservations', {
         headers: {
           Authorization: `Bearer ${cookies.userToken}`,
         },
       })
       .then((response) => {
-        console.log(response);
         setUserReservations(response.data.data);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+      });
   }, [props.addedReservation]);
 
   function cancelReservation(seq: number) {
@@ -32,8 +33,8 @@ function MyReservations(props: MyReservationsProps) {
       return reservation.seq !== seq;
     });
 
-    axios
-      .delete('https://disability-map.azurewebsites.net/Reservation', {
+    axiosConfig
+      .delete('/Reservation', {
         params: {
           seq: seq,
         },
@@ -42,7 +43,6 @@ function MyReservations(props: MyReservationsProps) {
         },
       })
       .then((response) => {
-        console.log(response);
         setUserReservations(deleted);
       })
       .catch((error) => {

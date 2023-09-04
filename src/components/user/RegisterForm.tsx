@@ -1,7 +1,15 @@
 import { useState } from 'react';
-import { Dialog, TextField, Button, FormControl } from '@mui/material';
+import { useMutation } from 'react-query';
+import {
+  Dialog,
+  TextField,
+  Button,
+  FormControl,
+  Backdrop,
+  CircularProgress,
+} from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import axios from 'axios';
+import axiosConfig from '../../api/axiosConfig';
 
 type RegisterFormProps = {
   isRegisterOpen: boolean;
@@ -22,6 +30,15 @@ function RegisterForm(props: RegisterFormProps) {
     password: '',
     confirmPassword: '',
   });
+  const registerMutation = useMutation({
+    mutationFn: (userData: {
+      login: string;
+      email: string;
+      passwrod: string;
+    }) => {
+      return axiosConfig.post('/Access/Register/', userData);
+    },
+  });
 
   function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
     setHelperText('');
@@ -38,14 +55,13 @@ function RegisterForm(props: RegisterFormProps) {
     if (files && files.length > 0) {
       const formData = new FormData();
       formData.append('image', files[0]);
-      axios
-        .post('https://disability-map.azurewebsites.net/Photo', formData, {
+      axiosConfig
+        .post('/Photo/', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         })
         .then((response) => {
-          console.log(response);
           setPhotoUrl(response.data.data);
         })
         .catch((err) => {
@@ -61,6 +77,7 @@ function RegisterForm(props: RegisterFormProps) {
       password: '',
       confirmPassword: '',
     });
+    setHelperText('');
     setPhotoUrl('');
     props.handleClose();
   }
@@ -76,34 +93,31 @@ function RegisterForm(props: RegisterFormProps) {
     return true;
   }
 
-  function handleSubmit(e: React.FormEvent<EventTarget>) {
+  async function handleSubmit(e: React.FormEvent<EventTarget>) {
     e.preventDefault();
     const isPasswordValid = validatePasswords(
       userData.password,
       userData.confirmPassword
     );
     if (isPasswordValid) {
-      axios
-        .post('https://disability-map.azurewebsites.net/Access/Register', {
+      try {
+        await registerMutation.mutateAsync({
           login: userData.login,
           email: userData.email,
-          password: userData.password,
-          imagePath: photoUrl,
-        })
-        .then((response) => {
-          console.log(response.data);
-          setHelperText('');
-          props.handleClose();
-        })
-        .catch((error) => {
-          console.error(error);
-          setHelperText(error.response.data.message);
+          passwrod: userData.password,
         });
+        closeRegister();
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
   return (
     <Dialog open={props.isRegisterOpen}>
+      <Backdrop open={registerMutation.isLoading}>
+        <CircularProgress />
+      </Backdrop>
       <form className="form">
         <Button
           variant="outlined"

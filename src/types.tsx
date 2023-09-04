@@ -6,7 +6,14 @@ export type Location = {
 }[];
 
 export type PlaceResult = {
-  categories: {}[];
+  categories: {
+    icon: {
+      prefix: string;
+      suffix: string;
+    };
+    id: number;
+    name: string;
+  }[];
   chains: [];
   distance: number;
   fsq_id: string;

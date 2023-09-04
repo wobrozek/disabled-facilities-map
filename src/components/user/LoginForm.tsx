@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useMutation } from 'react-query';
 import {
   Dialog,
   TextField,
@@ -7,13 +8,12 @@ import {
   Backdrop,
   CircularProgress,
 } from '@mui/material';
-import axios from 'axios';
-import { useCookies } from 'react-cookie';
+import axiosConfig from '../../api/axiosConfig';
 
 type LoginForm = {
   isLoginOpen: boolean;
   handleClose: () => void;
-  handleLogIn: () => void;
+  handleLogIn: (token: string) => void;
   handleGetUserPhoto: (imgPath: string) => void;
 };
 
@@ -25,8 +25,26 @@ function LoginForm(props: LoginForm) {
     }
   );
   const [helperText, setHelperText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [cookies, setCookie] = useCookies(['userToken']);
+
+  const loginMutation = useMutation({
+    mutationFn: (userData: { login: string; password: string }) => {
+      return axiosConfig.post('/Access/Login/', userData);
+    },
+    onSuccess: (data) => {
+      props.handleClose();
+      setHelperText('');
+      setUserAuth({
+        login: '',
+        password: '',
+      });
+      props.handleLogIn(data.data.data.token);
+      props.handleGetUserPhoto(data.data.data.imagePath);
+    },
+    onError: (error: any) => {
+      console.error(error);
+      setHelperText(error.response.data.message);
+    },
+  });
 
   function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
     setUserAuth((prev) => {
@@ -39,31 +57,12 @@ function LoginForm(props: LoginForm) {
 
   function submitForm(e: React.FormEvent<EventTarget>) {
     e.preventDefault();
-    setIsLoading(true);
-    axios
-      .post('https://disability-map.azurewebsites.net/Access/Login', {
-        login: userAuth.login,
-        password: userAuth.password,
-      })
-      .then((response) => {
-        console.log(response);
-        props.handleLogIn();
-        props.handleGetUserPhoto(response.data.data.imagePath);
-        setHelperText('');
-        props.handleClose();
-        setIsLoading(false);
-        setCookie('userToken', response.data.data.token);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-        setHelperText(error.response.data.message);
-      });
+    loginMutation.mutate(userAuth);
   }
 
   return (
     <Dialog open={props.isLoginOpen}>
-      <Backdrop open={isLoading}>
+      <Backdrop open={loginMutation.isLoading}>
         <CircularProgress />
       </Backdrop>
       <form className="form">
@@ -84,14 +83,18 @@ function LoginForm(props: LoginForm) {
           <p className="form__error-msg">{helperText}</p>
         </FormControl>
         <Button
-          disabled={isLoading}
+          disabled={loginMutation.isLoading}
           variant="contained"
           type="submit"
           onClick={submitForm}
         >
           Log In
         </Button>
-        <Button disabled={isLoading} type="button" onClick={props.handleClose}>
+        <Button
+          disabled={loginMutation.isLoading}
+          type="button"
+          onClick={props.handleClose}
+        >
           Discard
         </Button>
       </form>

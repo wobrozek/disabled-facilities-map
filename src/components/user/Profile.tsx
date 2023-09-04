@@ -4,16 +4,17 @@ import { Avatar, Button } from '@mui/material/';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
 import UserContext from '../../context/UserContext';
+import { Height } from '@mui/icons-material';
 
 type ProfileProps = {
-  handleLogIn: () => void;
+  handleLogIn: (token: string) => void;
 };
 
 function Profile(props: ProfileProps) {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [userPhoto, setUserPhoto] = useState('');
-  const [cookies, , removeCookie] = useCookies(['userToken']);
+  const [, , removeCookie] = useCookies(['userToken']);
 
   const isLoggedIn = useContext(UserContext);
 
@@ -31,7 +32,6 @@ function Profile(props: ProfileProps) {
 
   function logOut() {
     removeCookie('userToken');
-    props.handleLogIn();
   }
 
   return (
@@ -39,7 +39,7 @@ function Profile(props: ProfileProps) {
       {isLoggedIn && (
         <div className="profile__logged-in">
           <Avatar
-            sx={{ width: '100px', height: '100px' }}
+            sx={{ height: { md: 100 }, width: { md: 100 } }}
             src={userPhoto ? userPhoto : undefined}
           />
           <Button variant="contained" onClick={logOut}>
