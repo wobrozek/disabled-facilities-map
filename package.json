@@ -1,5 +1,6 @@
 {
   "name": "disabled-facilities-map",
+  "homepage": ".",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -21,7 +22,6 @@
     "@mui/x-date-pickers": "^6.10.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
-    "kuduscript": "^1.0.17",
     "leaflet": "^1.9.4",
     "qs": "^6.11.2",
     "react": "^18.2.0",
