@@ -34,7 +34,7 @@ function RegisterForm(props: RegisterFormProps) {
     mutationFn: (userData: {
       login: string;
       email: string;
-      passwrod: string;
+      password: string;
     }) => {
       return axiosConfig.post('/Access/Register/', userData);
     },
