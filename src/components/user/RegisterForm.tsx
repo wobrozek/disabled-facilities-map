@@ -104,7 +104,7 @@ function RegisterForm(props: RegisterFormProps) {
         await registerMutation.mutateAsync({
           login: userData.login,
           email: userData.email,
-          passwrod: userData.password,
+          password: userData.password,
         });
         closeRegister();
       } catch (error) {
