@@ -21,6 +21,7 @@ function MyReservations(props: MyReservationsProps) {
         },
       })
       .then((response) => {
+        console.log(response);
         setUserReservations(response.data.data);
       })
       .catch((error) => {
