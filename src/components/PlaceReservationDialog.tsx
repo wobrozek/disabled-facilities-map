@@ -32,7 +32,8 @@ function PlaceReservationDialog(props: PlaceReservationDialogProps) {
   function submitReservation(e: React.FormEvent) {
     e.preventDefault();
     if (date) {
-      const unixTimeStamp = date.unix();
+      const unixTimeStamp = BigInt(date.unix());
+
       axiosConfig
         .post(
           '/Reservation',
