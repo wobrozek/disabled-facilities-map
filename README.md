@@ -5,6 +5,8 @@
 - [About the Project](#about-the-project)
 - [Technologies](#used-technologies)
 - [Installation](#installation)
+- [Backend Repo](#backend-repo)
+- [Project Status](#project-status)
 
 ## About the Project
 
@@ -37,8 +39,10 @@ Users can filter places and facilities by type, see the list of reservations and
 
 _npm install_
 
-### live version
+### Backend Repo
 
-To see live version of project check out: [www.react-disabiltymap.azurewebsites.net](https://react-disabiltymap.azurewebsites.net/)
+Checkout backend repository: https://github.com/wobrozek/disability-map-api
 
-Backend repo: https://github.com/wobrozek/disability-map-api
+### Project Status
+
+The website is not currently hosted
