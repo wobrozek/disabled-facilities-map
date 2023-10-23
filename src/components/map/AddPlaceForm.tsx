@@ -29,6 +29,7 @@ function AddPlaceForm(props: AddPlaceFormProps) {
   });
   const [photoUrl, setPhotoUrl] = useState('');
   const [cookies] = useCookies(['userToken']);
+  const [helperText, setHelperText] = useState<string>('');
 
   function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
     setPlaceData((prev) => {
@@ -91,12 +92,11 @@ function AddPlaceForm(props: AddPlaceFormProps) {
         }
       )
       .then((response) => {
-        console.log(response.data);
         props.handleSetAddedPlace(response.data.data);
         props.handleClose();
       })
       .catch((error) => {
-        console.error(error);
+        setHelperText(error.response.data.message);
       });
   }
 
@@ -143,6 +143,7 @@ function AddPlaceForm(props: AddPlaceFormProps) {
             name="email"
             value={placeData.email}
           />
+          <p className="form__error-msg">{helperText}</p>
         </FormControl>
         <Button variant="contained" type="submit" onClick={submitForm}>
           Add Place

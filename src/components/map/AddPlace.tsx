@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Marker, useMap } from 'react-leaflet';
-import L from 'leaflet';
+import L, { LatLng } from 'leaflet';
 import AddPlaceForm from './AddPlaceForm';
 import {
   Button,
@@ -30,6 +30,8 @@ function AddPlace(props: AddPlaceProps) {
 
   function toggleMarker() {
     setDisplayMarker((prev) => !prev);
+    const CurrentCenter: LatLng = map.getCenter();
+    setPosition([CurrentCenter.lat, CurrentCenter.lng]);
   }
 
   function toggleFormOpen() {
